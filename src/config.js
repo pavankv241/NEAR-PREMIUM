@@ -1,6 +1,6 @@
 const contractPerNetwork = {
   mainnet: ' ',
-  testnet: 'easyapp456.testnet',
+  testnet: 'near-ign-nft.testnet',
 };
 
 const oraclePrice = {
