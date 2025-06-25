@@ -316,3 +316,9 @@ body {
   background: rgba(102, 126, 234, 0.05) !important;
   border: 1px solid rgba(102, 126, 234, 0.1);
 }
+
+.navbar-dark .navbar-nav .nav-link {
+  color: #ff69b4 !important;   /* Pink */
+  opacity: 1 !important;       /* Remove Bootstrap's faded look */
+  font-weight: bold;
+}

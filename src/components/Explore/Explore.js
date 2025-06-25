@@ -2,7 +2,7 @@ import React from "react";
 import CardList from "../CardList/CardList";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const Explore = ({ nfts, isConnected, isLoading, deleteNFT, address }) => {
+const Explore = ({ nfts, isConnected, isLoading, deleteNFT, address, onPayAndView }) => {
 
   return (
     <div className="container py-5">
@@ -24,7 +24,7 @@ const Explore = ({ nfts, isConnected, isLoading, deleteNFT, address }) => {
             <p className="mt-3 text-muted">Loading premium videos...</p>
           </div>
         ) : nfts.length > 0 ? (
-          <CardList userNFTs={nfts} deleteNFT={deleteNFT} address={address}/>
+          <CardList userNFTs={nfts} deleteNFT={deleteNFT} address={address} onPayAndView={onPayAndView}/>
         ) : (
           <div className="text-center py-5">
             <div className="mb-3">

@@ -8,6 +8,9 @@ const Mint = ({ uploadToPinata, mintNFT }) => {
     const [file, setFile] = useState(null);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [premiumAmount, setPremiumAmount] = useState('');
+    const [normalAmount, setNormalAmount] = useState('');
+    const [premiumDays, setPremiumDays] = useState('');
     const [isMinting, setIsMinting] = useState(false);
     const [isDragover, setIsDragover] = useState(false);
 
@@ -39,7 +42,7 @@ const Mint = ({ uploadToPinata, mintNFT }) => {
             return;
         }
 
-        if (!file || !title || !description) {
+        if (!file || !title || !description || !premiumAmount || !normalAmount || !premiumDays) {
             alert('Please complete all fields');
             return;
         }
@@ -48,10 +51,13 @@ const Mint = ({ uploadToPinata, mintNFT }) => {
 
         try {
             const IpfsHash = await uploadToPinata(file);
-            await mintNFT(title, description, IpfsHash);
+            await mintNFT(title, description, IpfsHash, premiumAmount, normalAmount, premiumDays);
             clearVideo();
             setTitle('');
             setDescription('');
+            setPremiumAmount('');
+            setNormalAmount('');
+            setPremiumDays('');
         } catch (e) {
             console.log(e);
         } finally {
@@ -165,12 +171,52 @@ const Mint = ({ uploadToPinata, mintNFT }) => {
                                 </div>
                             </div>
 
+                            {/* Premium/Normal Amount and Days Fields */}
+                            <div className="row g-3 mt-3">
+                                <div className="col-md-4">
+                                    <label className="form-label fw-bold">Premium Amount (NEAR)</label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={premiumAmount}
+                                        onChange={(e) => setPremiumAmount(e.target.value)}
+                                        placeholder="e.g. 2.5"
+                                        min="0"
+                                        step="0.01"
+                                    />
+                                </div>
+                                <div className="col-md-4">
+                                    <label className="form-label fw-bold">Normal Amount (NEAR)</label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={normalAmount}
+                                        onChange={(e) => setNormalAmount(e.target.value)}
+                                        placeholder="e.g. 1.0"
+                                        min="0"
+                                        step="0.01"
+                                    />
+                                </div>
+                                <div className="col-md-4">
+                                    <label className="form-label fw-bold">Premium Days</label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={premiumDays}
+                                        onChange={(e) => setPremiumDays(e.target.value)}
+                                        placeholder="e.g. 3"
+                                        min="1"
+                                        step="1"
+                                    />
+                                </div>
+                            </div>
+
                             {/* Upload Button */}
                             <div className="text-center mt-4">
                                 <button
                                     className={`btn btn-primary btn-lg ${isMinting ? 'disabled' : ''}`}
                                     onClick={handleUpload}
-                                    disabled={isMinting || !file || !title || !description}
+                                    disabled={isMinting || !file || !title || !description || !premiumAmount || !normalAmount || !premiumDays}
                                     style={{ minWidth: '200px' }}
                                 >
                                     {isMinting ? (

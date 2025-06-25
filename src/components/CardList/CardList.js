@@ -2,7 +2,7 @@ import React from 'react';
 import Card from '../Card/Card';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const CardList = ({ userNFTs, deleteNFT, address }) => {
+const CardList = ({ userNFTs, deleteNFT, address, onPayAndView }) => {
     return (
         <div className="row g-4">
             {userNFTs.map((nft, index) => (
@@ -12,6 +12,7 @@ const CardList = ({ userNFTs, deleteNFT, address }) => {
                         index={index} 
                         deleteNFT={deleteNFT} 
                         address={address}
+                        onPayAndView={onPayAndView}
                     />
                 </div>
             ))}

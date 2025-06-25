@@ -4,12 +4,12 @@ import { NearContext } from '@/wallets/near';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const Navbar = ({ onRouteChange }) => {
-    const { signedAccountId, signIn, signOut } = useContext(NearContext);
+    const { signedAccountId, wallet } = useContext(NearContext);
 
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container">
-                <a className="navbar-brand fw-bold" href="#" onClick={() => onRouteChange("home")}>
+                <a className="navbar-brand fw-bold text-light" href="#" onClick={() => onRouteChange("home")}>
                     <span className="text-primary">NEAR</span> Premium
                 </a>
                 
@@ -20,17 +20,17 @@ export const Navbar = ({ onRouteChange }) => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav me-auto">
                         <li className="nav-item">
-                            <a className="nav-link" href="#" onClick={() => onRouteChange("home")}>
+                            <a className="nav-link fw-bold" style={{color: '#ff69b4'}} href="#" onClick={() => onRouteChange("home")}>
                                 Home
                             </a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="#" onClick={() => onRouteChange("explore")}>
+                            <a className="nav-link fw-bold" style={{color: '#ff69b4'}} href="#" onClick={() => onRouteChange("explore")}>
                                 Premium Videos
                             </a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="#" onClick={() => onRouteChange("mint")}>
+                            <a className="nav-link fw-bold" style={{color: '#ff69b4'}} href="#" onClick={() => onRouteChange("mint")}>
                                 Upload Video
                             </a>
                         </li>
@@ -44,7 +44,9 @@ export const Navbar = ({ onRouteChange }) => {
                                 </span>
                                 <button 
                                     className="btn btn-outline-light btn-sm"
-                                    onClick={signOut}
+                                    onClick={async () => {
+                                        await wallet.signOut();
+                                    }}
                                 >
                                     Disconnect
                                 </button>
@@ -52,7 +54,9 @@ export const Navbar = ({ onRouteChange }) => {
                         ) : (
                             <button 
                                 className="btn btn-primary"
-                                onClick={signIn}
+                                onClick={async () => {
+                                    await wallet.signIn();
+                                }}
                             >
                                 Connect Wallet
                             </button>

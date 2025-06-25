@@ -119,14 +119,16 @@ const showToastAndWait = async (message) => {
 };
 
 
-  const uploadVideo = async (title, description, uri) => {
+  const uploadVideo = async (title, description, uri, premiumAmount, normalAmount, premiumDays) => {
     if(!signedAccountId) return;
     try {
-
       const tokenMetadata = {
         title: title,
         description: description,
         media: `https://beige-sophisticated-baboon-74.mypinata.cloud/ipfs/${uri}`,
+        premium_amount: premiumAmount,
+        normal_amount: normalAmount,
+        premium_days: premiumDays
       };
 
       const metadataSizeInBytes = new TextEncoder().encode(JSON.stringify(tokenMetadata)).length;
@@ -144,11 +146,7 @@ const showToastAndWait = async (message) => {
           method: 'mint',
           args: {
               token_id: title,
-              token_metadata: {
-                  "title": title,
-                  "description": description,
-                  "media": `https://beige-sophisticated-baboon-74.mypinata.cloud/ipfs/${uri}`
-              }
+              token_metadata: tokenMetadata
           },
           deposit: depositAmount.toString()
         });
@@ -233,6 +231,21 @@ const showToastAndWait = async (message) => {
     }
   }
 
+  // Payment logic for pay-per-view
+  const onPayAndView = async (nft, index) => {
+    if (!signedAccountId || !wallet) throw new Error('Wallet not connected');
+    const premiumAmount = nft.data?.premium_amount;
+    const creator = nft.owner;
+    if (!premiumAmount || !creator) throw new Error('Invalid video data');
+    // Convert NEAR to yoctoNEAR
+    const yoctoAmount = BigInt(Math.floor(Number(premiumAmount) * 1e24)).toString();
+    await wallet.callMethod({
+      contractId: creator,
+      method: '', // simple transfer
+      args: {},
+      deposit: yoctoAmount
+    });
+  };
 
   return (
     <>
@@ -241,7 +254,7 @@ const showToastAndWait = async (message) => {
         {route === "home" ? (
                 <Home onRouteChange={onRouteChange}/>
             ) : route === "explore" ? (
-                <Explore nfts={videos} isConnected={connected} isLoading={isLoading} deleteNFT={removeVideo} address={signedAccountId}/>
+                <Explore nfts={videos} isConnected={connected} isLoading={isLoading} deleteNFT={removeVideo} address={signedAccountId} onPayAndView={onPayAndView}/>
             ) : route === "mint" ? (
                 <Mint uploadToPinata={uploadToPinata} mintNFT={uploadVideo} />
             ) : /* route == "log" ? (
