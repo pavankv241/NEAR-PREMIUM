@@ -1,4 +1,16 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# NEAR-PREMIUM
+
+A Premium Pay-per-view Video Platform built on NEAR Blockchain
+
+This is a [Next.js](https://nextjs.org/) project that allows creators to upload premium video content and monetize it through NFT-based access tokens on the NEAR blockchain.
+
+## Features
+
+- **Premium Video Upload**: Upload high-quality video content to IPFS
+- **NFT-based Access**: Each video is minted as an NFT for access control
+- **Pay-per-view Model**: Users pay to access premium video content
+- **NEAR Wallet Integration**: Seamless blockchain transactions
+- **Creator Monetization**: Direct revenue for content creators
 
 ## Getting Started
 
@@ -16,9 +28,12 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## How It Works
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+1. **Content Creators**: Upload premium videos and mint them as NFTs
+2. **Viewers**: Purchase access to videos by acquiring the corresponding NFTs
+3. **Blockchain Security**: All transactions and access control managed on NEAR
+4. **IPFS Storage**: Decentralized video storage for reliability
 
 ## Learn More about NEAR
 
