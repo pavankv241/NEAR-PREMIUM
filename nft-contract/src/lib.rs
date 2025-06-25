@@ -132,7 +132,7 @@ impl Contract {
             self.paid_burn_fee.push(sender.clone());
         }
     }
-    
+
     #[payable]
     pub fn burn(&mut self, index: U64, usd: String) {
         let owner_id = env::signer_account_id();
@@ -145,7 +145,7 @@ impl Contract {
 
         let nft_data = self.nfts.get(index.0 as u32).expect("NFT not found.");
         assert_eq!(&nft_data.owner, &owner_id, "You do not own this token.");
-        
+
         let zero_address: AccountId = "0000000000000000000000000000000000000000".parse().expect("Invalid burn address");
 
         self.tokens.nft_transfer(zero_address.clone(), nft_data.token_id.clone(), None, None);
@@ -190,7 +190,7 @@ impl Contract {
     pub fn get_burn_log(&self) -> Vec<BurnLog> {
         (0..self.burn_log.len())
             .filter_map(|index| self.burn_log.get(index))
-            .cloned() 
+            .cloned()
             .collect()
     }
     
