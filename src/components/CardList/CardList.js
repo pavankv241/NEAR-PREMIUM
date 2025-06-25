@@ -1,32 +1,20 @@
-import React from "react";
-import Card from "../Card/Card";
+import React from 'react';
+import Card from '../Card/Card';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CardList = ({ userNFTs, deleteNFT, address }) => {
-    let cardComponents = [];
-
-    if (userNFTs) {
-        cardComponents = userNFTs.map((nft) => (
-            <Card
-                key={nft.id}
-                owner={nft.owner}
-                name={nft.data.title}
-                description={nft.data.description}
-                image={nft.data.media}
-                onDelete={() => deleteNFT(nft.id)}
-                address={address}
-            />
-        ));
-    }
-
     return (
-        <div>
-            {userNFTs.length === 0 ? (
-                <p className="text-white">No NFTs found.</p>
-            ) : (
-                <div className="row row-cols-1 row-cols-md-2 g-4 pb-5">
-                    {cardComponents}
+        <div className="row g-4">
+            {userNFTs.map((nft, index) => (
+                <div key={index} className="col-lg-4 col-md-6">
+                    <Card 
+                        nft={nft} 
+                        index={index} 
+                        deleteNFT={deleteNFT} 
+                        address={address}
+                    />
                 </div>
-            )}
+            ))}
         </div>
     );
 };

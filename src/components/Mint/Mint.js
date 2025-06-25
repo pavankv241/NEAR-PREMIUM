@@ -13,8 +13,7 @@ const Mint = ({ uploadToPinata, mintNFT }) => {
 
     const { getRootProps, getInputProps } = useDropzone({
         accept: { 
-            'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp'],
-            'video/*': ['.mp4', '.webm', '.mov']
+            'video/*': ['.mp4', '.webm', '.mov', '.avi', '.mkv']
         },
         onDrop: (acceptedFiles) => {
             const previewFile = Object.assign(acceptedFiles[0], {
@@ -27,14 +26,14 @@ const Mint = ({ uploadToPinata, mintNFT }) => {
         onDropAccepted: () => setIsDragover(false),
     });
 
-    const clearImage = () => {
+    const clearVideo = () => {
         if (file && file.preview) {
             URL.revokeObjectURL(file.preview);
         }
         setFile(null);
     };
 
-    const handleMint = async () => {
+    const handleUpload = async () => {
         if (!signedAccountId) {
             alert('Please connect your wallet first!');
             return;
@@ -50,7 +49,7 @@ const Mint = ({ uploadToPinata, mintNFT }) => {
         try {
             const IpfsHash = await uploadToPinata(file);
             await mintNFT(title, description, IpfsHash);
-            clearImage();
+            clearVideo();
             setTitle('');
             setDescription('');
         } catch (e) {
@@ -63,17 +62,19 @@ const Mint = ({ uploadToPinata, mintNFT }) => {
     if (!signedAccountId) {
         return (
             <div className="container d-flex flex-column align-items-center justify-content-center min-vh-100">
-                <div className="card-modern text-center" style={{ maxWidth: '500px' }}>
-                    <div className="mb-4">
-                        <span className="fs-1 text-primary">Lock</span>
+                <div className="card text-center" style={{ maxWidth: '500px' }}>
+                    <div className="card-body p-5">
+                        <div className="mb-4">
+                            <span className="fs-1 text-primary">🔐</span>
+                        </div>
+                        <h3 className="fw-bold mb-3">Wallet Required</h3>
+                        <p className="text-muted mb-4">
+                            Please connect your NEAR wallet to start uploading premium videos
+                        </p>
+                        <button className="btn btn-primary">
+                            Connect Wallet
+                        </button>
                     </div>
-                    <h3 className="gradient-text fw-bold mb-3">Wallet Required</h3>
-                    <p className="text-muted mb-4">
-                        Please connect your NEAR wallet to start minting NFTs
-                    </p>
-                    <button className="btn btn-modern">
-                        Connect Wallet
-                    </button>
                 </div>
             </div>
         );
@@ -85,110 +86,105 @@ const Mint = ({ uploadToPinata, mintNFT }) => {
                 <div className="col-lg-8">
                     {/* Header */}
                     <div className="text-center mb-5">
-                        <h2 className="gradient-text fw-bold mb-3">Create Your NFT</h2>
-                        <p className="text-muted">Upload your digital asset and mint it as a unique NFT on NEAR blockchain</p>
+                        <h2 className="fw-bold mb-3">Upload Premium Video</h2>
+                        <p className="text-muted">Share your exclusive video content and monetize it with NFT-based access control</p>
                     </div>
 
-                    <div className="card-modern">
-                        {/* File Upload Section */}
-                        <div className="mb-4">
-                            <h5 className="fw-bold mb-3">Upload Your Asset</h5>
-                            <div 
-                                {...getRootProps({ 
-                                    className: `dropzone-modern ${isDragover ? 'dragover' : ''}` 
-                                })}
-                            >
-                                <input {...getInputProps()} />
-                                {file ? (
-                                    <div className="text-center">
-                                        {file.type.startsWith('image/') ? (
-                                            <img 
-                                                src={file.preview} 
-                                                alt="Preview" 
-                                                className="img-fluid rounded mb-3" 
-                                                style={{ maxHeight: '300px', maxWidth: '100%' }} 
-                                            />
-                                        ) : (
+                    <div className="card border-0 shadow-sm">
+                        <div className="card-body p-4">
+                            {/* Video Upload Section */}
+                            <div className="mb-4">
+                                <h5 className="fw-bold mb-3">Upload Your Video</h5>
+                                <div 
+                                    {...getRootProps({ 
+                                        className: `border-2 border-dashed rounded p-5 text-center ${isDragover ? 'border-primary bg-light' : 'border-muted'}` 
+                                    })}
+                                >
+                                    <input {...getInputProps()} />
+                                    {file ? (
+                                        <div className="text-center">
                                             <video 
                                                 src={file.preview} 
                                                 controls 
                                                 className="img-fluid rounded mb-3" 
                                                 style={{ maxHeight: '300px', maxWidth: '100%' }}
                                             />
-                                        )}
-                                        <div className="d-flex justify-content-center gap-2">
-                                            <button 
-                                                className="btn btn-modern btn-sm"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    clearImage();
-                                                }}
-                                            >
-                                                Clear
-                                            </button>
+                                            <div className="d-flex justify-content-center gap-2">
+                                                <button 
+                                                    className="btn btn-outline-danger btn-sm"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        clearVideo();
+                                                    }}
+                                                >
+                                                    Remove Video
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                ) : (
-                                    <div className="text-center">
-                                        <div className="mb-3">
-                                            <span className="fs-1 text-primary">Upload</span>
+                                    ) : (
+                                        <div className="text-center">
+                                            <div className="mb-3">
+                                                <span className="fs-1 text-primary">🎬</span>
+                                            </div>
+                                            <h6 className="fw-bold">Drag & Drop your video here</h6>
+                                            <p className="text-muted mb-3">or click to browse</p>
+                                            <p className="text-muted small">
+                                                Supports: MP4, WebM, MOV, AVI, MKV
+                                            </p>
                                         </div>
-                                        <h6 className="fw-bold">Drag & Drop your file here</h6>
-                                        <p className="text-muted mb-3">or click to browse</p>
-                                        <p className="text-muted small">
-                                            Supports: JPG, PNG, GIF, WebP, MP4, WebM, MOV
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Form Fields */}
-                        <div className="row g-3">
-                            <div className="col-md-6">
-                                <label className="form-label fw-bold">NFT Title</label>
-                                <input
-                                    type="text"
-                                    className="input-modern w-100"
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    placeholder="Enter a unique title for your NFT"
-                                    maxLength={50}
-                                />
-                                <small className="text-muted">Max 50 characters</small>
+                                    )}
+                                </div>
                             </div>
 
-                            <div className="col-md-6">
-                                <label className="form-label fw-bold">Description</label>
-                                <textarea
-                                    className="input-modern w-100"
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    placeholder="Describe your NFT"
-                                    rows="3"
-                                    maxLength={500}
-                                />
-                                <small className="text-muted">Max 500 characters</small>
-                            </div>
-                        </div>
+                            {/* Form Fields */}
+                            <div className="row g-3">
+                                <div className="col-md-6">
+                                    <label className="form-label fw-bold">Video Title</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                        placeholder="Enter a compelling title for your video"
+                                        maxLength={50}
+                                    />
+                                    <small className="text-muted">Max 50 characters</small>
+                                </div>
 
-                        {/* Mint Button */}
-                        <div className="text-center mt-4">
-                            <button
-                                className={`btn btn-modern btn-lg ${isMinting ? 'disabled' : ''}`}
-                                onClick={handleMint}
-                                disabled={isMinting || !file || !title || !description}
-                                style={{ minWidth: '200px' }}
-                            >
-                                {isMinting ? (
-                                    <>
-                                        <div className="loading-spinner d-inline-block me-2"></div>
-                                        Minting...
-                                    </>
-                                ) : (
-                                    'Mint NFT'
-                                )}
-                            </button>
+                                <div className="col-md-6">
+                                    <label className="form-label fw-bold">Description</label>
+                                    <textarea
+                                        className="form-control"
+                                        value={description}
+                                        onChange={(e) => setDescription(e.target.value)}
+                                        placeholder="Describe your premium video content"
+                                        rows="3"
+                                        maxLength={500}
+                                    />
+                                    <small className="text-muted">Max 500 characters</small>
+                                </div>
+                            </div>
+
+                            {/* Upload Button */}
+                            <div className="text-center mt-4">
+                                <button
+                                    className={`btn btn-primary btn-lg ${isMinting ? 'disabled' : ''}`}
+                                    onClick={handleUpload}
+                                    disabled={isMinting || !file || !title || !description}
+                                    style={{ minWidth: '200px' }}
+                                >
+                                    {isMinting ? (
+                                        <>
+                                            <div className="spinner-border spinner-border-sm me-2" role="status">
+                                                <span className="visually-hidden">Loading...</span>
+                                            </div>
+                                            Uploading...
+                                        </>
+                                    ) : (
+                                        'Upload Premium Video'
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

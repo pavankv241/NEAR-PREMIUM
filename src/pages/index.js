@@ -24,8 +24,8 @@ const IndexPage = () => {
     const [route, setRoute] = useState("home");
     const [connected, setConnected] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [shouldFetchNfts, setShouldFetchNfts] = useState(false);
-    const [nfts, setNfts] = useState([]);
+    const [shouldFetchVideos, setShouldFetchVideos] = useState(false);
+    const [videos, setVideos] = useState([]);
     const [isLogLoading, setIsLogLoading] = useState(false);
     const [log, setLog] = useState([]);
 
@@ -38,34 +38,34 @@ const IndexPage = () => {
     }, [signedAccountId])
 
     useEffect(() => {
-      async function getAllNFTs() {
+      async function getAllVideos() {
         if (connected && signedAccountId) { 
           try {
             setIsLoading(true);
             const count = await wallet.viewMethod({contractId: CONTARCT, method: "get_total_count"});    
-            const nfts = [];
+            const videoList = [];
   
             for(let i =0; i<count; i++ ){
               const i_string = String(i);
               const tx = await wallet.viewMethod({contractId: CONTARCT, method: "get_nft", args: {index: i_string}});
               if(tx.data) {
                 console.log(tx)
-                nfts.push(tx);
+                videoList.push(tx);
               }
             }
-            setNfts(nfts);
-            setShouldFetchNfts(false);
+            setVideos(videoList);
+            setShouldFetchVideos(false);
             setIsLoading(false);
           } catch (error) {
-            console.error('Error fetching NFTs:', error);
-            toast.error("Error fetching NFTs", {
+            console.error('Error fetching videos:', error);
+            toast.error("Error fetching premium videos", {
               position: "top-center"
             })
           }
         }
       }
-      getAllNFTs();
-    }, [shouldFetchNfts, connected, signedAccountId]);
+      getAllVideos();
+    }, [shouldFetchVideos, connected, signedAccountId]);
 
     /* Burn Log functionality temporarily disabled
     useEffect(() => {
@@ -119,7 +119,7 @@ const showToastAndWait = async (message) => {
 };
 
 
-  const mintNFTs = async (title, description, uri) => {
+  const uploadVideo = async (title, description, uri) => {
     if(!signedAccountId) return;
     try {
 
@@ -152,14 +152,14 @@ const showToastAndWait = async (message) => {
           },
           deposit: depositAmount.toString()
         });
-        toast.success("NFT minted successfully", {
+        toast.success("Premium video uploaded successfully", {
             position: "top-center"
           });
-        setShouldFetchNfts(true);
+        setShouldFetchVideos(true);
         onRouteChange("explore");
     } catch (e) {
         console.log(e)
-        toast.error('Error minting NFT', {
+        toast.error('Error uploading video', {
             position: "top-center"
           });
     }
@@ -174,18 +174,18 @@ const showToastAndWait = async (message) => {
       toast.info("Uploading video to IPFS", {
         position:"top-center"
       })
-      const uploadImage = await pinata.upload.file(file);
-      return uploadImage.IpfsHash;
+      const uploadVideo = await pinata.upload.file(file);
+      return uploadVideo.IpfsHash;
     } catch (error) {
       console.error("Error uploading to Pinata:", error);
-      toast.error("Minting NFT failed.", {
+      toast.error("Uploading video failed.", {
         position: "top-center"
       });
       throw new Error("Upload to Pinata failed.");
     }
   };
 
-  const deleteNFT = async (id) => {
+  const removeVideo = async (id) => {
     if(!signedAccountId) return;
     try {
       const depositAmount = BigInt(1);
@@ -202,7 +202,7 @@ const showToastAndWait = async (message) => {
       const price_of_1_Near = (value[0].price.multiplier / (10 ** value[0].price.decimals)) * (10 ** 24);
       const fee_price = 0.001 * price_of_1_Near;
 
-      await showToastAndWait(`A fee of 0.001 (${fee_price} USD) will be deducted for Burn Fee`);
+      await showToastAndWait(`A fee of 0.001 (${fee_price} USD) will be deducted for removal fee`);
       
       await wallet.callMethod({
         contractId: CONTARCT,
@@ -221,13 +221,13 @@ const showToastAndWait = async (message) => {
           },
           deposit: depositAmount.toString()
       });
-      toast.success("NFT deleted successfully", {
+      toast.success("Video removed successfully", {
           position: "top-center"
         });
-      setShouldFetchNfts(true);
+      setShouldFetchVideos(true);
     } catch (e) {
         console.log(e)
-        toast.error('Error Deleting NFT:', {
+        toast.error('Error removing video:', {
             position: "top-center"
           });
     }
@@ -241,9 +241,9 @@ const showToastAndWait = async (message) => {
         {route === "home" ? (
                 <Home onRouteChange={onRouteChange}/>
             ) : route === "explore" ? (
-                <Explore nfts={nfts} isConnected={connected} isLoading={isLoading} deleteNFT={deleteNFT} address={signedAccountId}/>
+                <Explore nfts={videos} isConnected={connected} isLoading={isLoading} deleteNFT={removeVideo} address={signedAccountId}/>
             ) : route === "mint" ? (
-                <Mint uploadToPinata={uploadToPinata} mintNFT={mintNFTs} />
+                <Mint uploadToPinata={uploadToPinata} mintNFT={uploadVideo} />
             ) : /* route == "log" ? (
                 <Log log={log} isLogLoading={isLogLoading} isConnected={connected}/>
             ) : */ (
